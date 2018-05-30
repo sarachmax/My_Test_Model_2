@@ -36,7 +36,7 @@ class DQNAgent:
         model.add(LSTM(30, return_sequences = True, input_shape = (self.state_size,1), activation='relu'))
         model.add(LSTM(18, return_sequences = True,  activation='relu'))
         model.add(LSTM(6, activation='relu'))
-        model.add(Dense(2, activation='linear'))
+        model.add(Dense(self.action_size, activation='linear'))
         model.compile(loss='mean_squared_error', optimizer=Adam(lr=self.learning_rate))
         return model
 
