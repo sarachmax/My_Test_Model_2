@@ -10,7 +10,7 @@ import datetime
 import numpy as np
 import pandas as pd 
 
-EPISODES = 400
+EPISODES = 250
 MARGIN = 1000
 
 start_index = 4664    #2013.01.02 12:00
