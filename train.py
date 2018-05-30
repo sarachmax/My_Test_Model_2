@@ -7,15 +7,14 @@ Created on Mon May 28 22:11:15 2018
 
 from EURUSDagent import DQNAgent
 import datetime
-import random 
 import numpy as np
 import pandas as pd 
 
-EPISODES = 300
+EPISODES = 400
 MARGIN = 1000
 
-start_index = 45    #2010.01.01 00:00
-end_index = 3161+1  #2011.12.30 20:00
+start_index = 4664    #2013.01.02 12:00
+end_index = 8322+1  #2016.06.01 00:00
 dataset = pd.read_csv('EURUSD_4H.csv')
 train_data = dataset.iloc[start_index:end_index,5:6]
 
@@ -128,10 +127,11 @@ def watch_result(episode ,s_time, e_time, c_index, all_index, action, reward, pr
 if __name__ == "__main__":
     
     agent = DQNAgent(state_size)
-    #agent.load("agent_model.h5")
+    agent.load("agent_model.h5")
+    
     num_index = all_index - state_size
     env = TrainEnvironment(X_train, num_index)
-    batch_size = 32 
+    batch_size = 20 
     for e in range(EPISODES):
         state = env.reset()
         state = np.reshape(state, (1, state_size, 1))
