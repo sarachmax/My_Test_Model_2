@@ -9,7 +9,6 @@ from EURUSDagent import DQNAgent
 import datetime
 import numpy as np
 import pandas as pd 
-import matplotlib.pyplot as plt 
 
 EPISODES = 300
 MARGIN = 1000
@@ -133,12 +132,10 @@ if __name__ == "__main__":
     num_index = all_index - state_size
     env = TrainEnvironment(X_train, num_index)
     batch_size = 20
-    best_profit = [] 
     best_reward = -300
     for e in range(EPISODES):
         state = env.reset()
-        state = np.reshape(state, (1, state_size, 1))
-        profit = []    
+        state = np.reshape(state, (1, state_size, 1))  
         for t in range(end_index-start_index):
             start_time = str(datetime.datetime.now().time())
             action = agent.act(state)
@@ -146,33 +143,27 @@ if __name__ == "__main__":
             next_state = np.reshape(next_state, (1,state_size,1))
             agent.remember(state, action, reward, next_state, done)
             state = next_state 
-            profit.append(reward)
             if done:
                 agent.update_target_model()
                 print('----------------------------- Episode Result -----------------------')
-                print("episode: {}/{}, time: {}, e: {:.2}"
-                      .format(e, EPISODES, t, agent.epsilon))
+                print("episode: {}/{}, time: {}, e: {:.4}"
+                      .format(e+1, EPISODES, t, agent.epsilon))
                 print('----------------------------- End Episode --------------------------')
                 if reward >= best_reward :
-                    best_profit = profit
+                    best_reward = reward
                 break
             
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
             
             end_time = str(datetime.datetime.now().time())
-            watch_result(e , start_time, end_time, env.train_index, end_index-start_index, env.get_action(action), reward ,env.profit)      
+            watch_result(e+1 , start_time, end_time, env.train_index, end_index-start_index, env.get_action(action), reward ,env.profit)      
 
-    best_profit = np.array(best_profit)
     agent.save("agent_model.h5")
 
-    print(best_profit)
-    plt.plot(best_profit, color = 'blue', label = 'Profit')
-    plt.title('Profit')
-    plt.xlabel('Time')
-    plt.ylabel('Profit')
-    plt.legend()
-    # plt.show()
-    plt.savefig('best_train.png')
+    print('train done')
+    print('BEST RESULT ==================================')
+    print("best reward : ", best_reward)
+
 
 
