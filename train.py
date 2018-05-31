@@ -152,9 +152,9 @@ if __name__ == "__main__":
                 if reward >= best_reward :
                     best_reward = reward
                 break
-            
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
+                agent.save("agent_model.h5")
             
             end_time = str(datetime.datetime.now().time())
             watch_result(e+1 , start_time, end_time, env.train_index, end_index-start_index, env.get_action(action), reward ,env.profit)      
