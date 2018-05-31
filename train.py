@@ -10,7 +10,7 @@ import datetime
 import numpy as np
 import pandas as pd 
 
-EPISODES = 250
+EPISODES = 300
 MARGIN = 1000
 
 start_index = 4664    #2013.01.02 12:00
@@ -74,7 +74,7 @@ class TrainEnvironment:
                 self.profit = self.mem_action*(current_price - self.cost_price)    
             else :
                 self.profit = current_price*(-0.001) + self.mem_action*(current_price - self.cost_price)
-            self.reward += self.profit
+            self.reward = self.profit + self.mem_reward
             self.mem_reward = self.reward 
             self.cost_price = current_price
             self.mem_action = action
@@ -86,7 +86,7 @@ class TrainEnvironment:
             loss = -self.loss_limit*self.train_data[self.train_index,59:60]
         if self.train_index + 1 == self.end_index :
             if self.reward > 0 : 
-                if self.reward <= 0.001 :
+                if self.reward <= 0.05*self.train_data[self.train_index,59:60]:
                     self.reward = -1
             print('Full End !')
             return True 
