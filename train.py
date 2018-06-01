@@ -101,7 +101,7 @@ class TrainEnvironment:
             return False
         
     def step(self,action):
-        skip = 6  # one day 
+        skip = 6  # half day 
         self.train_index += skip
         if self.train_index >= self.end_index-1 : 
             self.train_index = self.end_index-1 
@@ -127,19 +127,42 @@ def watch_result(episode ,s_time, e_time, c_index, all_index, action, reward, pr
 if __name__ == "__main__":
     
     agent = DQNAgent(state_size)
-    agent.load("agent_model.h5")
+    #agent.load("agent_model.h5")
     
     num_index = all_index - state_size
     env = TrainEnvironment(X_train, num_index)
-    batch_size = 20
+    
+    batch_size = 15 # Train Every 3 weeks data 
     best_reward = -300
+     
+    same_act_limit = 10 
+    
     for e in range(EPISODES):
+        last_action = -100
+        same_action = 0
+        
         state = env.reset()
         state = np.reshape(state, (1, state_size, 1))  
         for t in range(end_index-start_index):
             start_time = str(datetime.datetime.now().time())
-            action = agent.act(state)
+            
+            if same_action >= same_act_limit : 
+                print('random actions')
+                action = agent.act(state, random_action = True)
+                same_action -= 1
+            else :
+                action = agent.act(state)
+            
+            if action == last_action :
+                same_action += 1 
+            else :
+                same_action -= 1 
+                last_action = action
+                if same_action < -10 :
+                    same_action = -10 
+             
             next_state, reward, done = env.step(action)
+            
             next_state = np.reshape(next_state, (1,state_size,1))
             agent.remember(state, action, reward, next_state, done)
             state = next_state 
@@ -154,12 +177,13 @@ if __name__ == "__main__":
                 break
             if len(agent.memory) > batch_size:
                 agent.replay(batch_size)
-                agent.save("agent_model.h5")
             
             end_time = str(datetime.datetime.now().time())
-            watch_result(e+1 , start_time, end_time, env.train_index, end_index-start_index, env.get_action(action), reward ,env.profit)      
-
-    agent.save("agent_model.h5")
+            watch_result(e+1 , start_time, end_time, env.train_index, end_index-start_index, env.get_action(action), reward ,env.profit) 
+            print('same action counter : ', same_action, '/', same_act_limit) 
+        agent.save("agent_model.h5")
+        
+    #agent.save("agent_model.h5")
 
     print('train done')
     print('BEST RESULT ==================================')
