@@ -9,6 +9,7 @@ from EURUSDagent import DQNAgent
 import datetime
 import numpy as np
 import pandas as pd 
+import random
 
 EPISODES = 200
 MARGIN = 1000
@@ -135,7 +136,7 @@ if __name__ == "__main__":
     batch_size = 20 # Train Every 4 weeks data 
     best_reward = -300
      
-    same_act_limit = 10 
+    same_act_limit = 20
     
     for e in range(EPISODES):
         last_action = -100
@@ -154,7 +155,7 @@ if __name__ == "__main__":
                 action = agent.act(state)
             
             if action == last_action :
-                same_action += 1 
+                same_action += random.randrange(1,5) 
             else :
                 same_action -= 1 
                 last_action = action
