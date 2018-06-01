@@ -10,7 +10,7 @@ import datetime
 import numpy as np
 import pandas as pd 
 
-EPISODES = 300
+EPISODES = 200
 MARGIN = 1000
 
 start_index = 4664    #2013.01.02 12:00
@@ -127,12 +127,12 @@ def watch_result(episode ,s_time, e_time, c_index, all_index, action, reward, pr
 if __name__ == "__main__":
     
     agent = DQNAgent(state_size)
-    #agent.load("agent_model.h5")
+    agent.load("agent_model.h5")
     
     num_index = all_index - state_size
     env = TrainEnvironment(X_train, num_index)
     
-    batch_size = 15 # Train Every 3 weeks data 
+    batch_size = 20 # Train Every 4 weeks data 
     best_reward = -300
      
     same_act_limit = 10 
