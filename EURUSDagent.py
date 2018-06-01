@@ -47,15 +47,15 @@ class DQNAgent:
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
    
-    def act(self, state, train = True):
+    def act(self, state, train = True, random_action = False):
         if train : 
-            if np.random.rand() <= self.epsilon:
+            if np.random.rand() <= self.epsilon or random_action :
                 print('random action')
                 return random.randrange(self.action_size)
         act_values = self.model.predict(state)
-        print('act_value : ', act_values)
+        print('act : ', act_values)
         return np.argmax(act_values[0]) #return action 
-    
+        
     def replay(self, batch_size):
         minibatch = random.sample(self.memory, batch_size)
         

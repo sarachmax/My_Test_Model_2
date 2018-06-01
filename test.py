@@ -140,7 +140,7 @@ if __name__ == "__main__":
     agent.load("agent_model.h5")
     num_index = all_index - state_size
     env = TrainEnvironment(X_train, num_index)
-    batch_size = 5
+    batch_size = 10
     test_profit = []
     test_action = [] 
     
