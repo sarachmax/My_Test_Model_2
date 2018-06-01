@@ -50,6 +50,7 @@ class DQNAgent:
     def act(self, state, train = True):
         if train : 
             if np.random.rand() <= self.epsilon:
+                print('random action')
                 return random.randrange(self.action_size)
         act_values = self.model.predict(state)
         print('act_value : ', act_values)
